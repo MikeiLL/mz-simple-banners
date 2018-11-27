@@ -82,15 +82,107 @@ class Frontend {
 	}
 
 	/**
-	 * Display some test copy.
+	 * Display latest Banner CPT post if on front page.
 	 *
 	 * @since    1.0.0
 	 */
 	public function display_banner() {
+	    if (!is_front_page()) return;
 
-		echo "<h1>hello world.</h1>";
+        // The Query
+        $args = array(
+            'post_type' => 'mz_banner',
+            'post_status' => 'publish',
+            'posts_per_page'=> 1,
+            'order'=>'DESC',
+        );
+        $the_query = new \WP_Query( $args );
+
+        // The Loop
+        if ( $the_query->have_posts() ) {
+            while ( $the_query->have_posts() ) {
+                $the_query->the_post();
+                if (function_exists('get_field')) {
+                    $banner_background_color = get_field('banner_background_color');
+                    $banner_background_opacity = get_field('banner_background_opacity');
+                }
+                // Assign variables with defaults
+                $color = !empty($banner_background_color) ? $banner_background_color : '#99999';
+                $opacity = !empty($banner_background_opacity) ? $banner_background_opacity : false;
+                // Begin style rule
+                $banner_style = 'style="';
+                // build the background
+                $banner_style .= 'background:' . $this->hex2rgba($color, $opacity) . ';';
+                // build the positioning
+                $banner_style .= 'position:fixed;';
+                $banner_style .= 'bottom:0;';
+                // build the sizing
+                $banner_style .= 'min-height:200px;';
+                $banner_style .= 'width:100%;';
+                // z-index
+                $banner_style .= 'z-index:1000;';
+                //end the style rule
+                $banner_style .= '"';
+                echo '<div '. $banner_style . 'class="mz-simple-banner mz-simple-banner-' . get_the_title(). '">';
+                echo '<button type="button" class="close" aria-label="Close">';
+                echo '  <span aria-hidden="true">&times;</span>';
+                echo '</button>';
+                echo the_content();
+                echo '</div>';
+            }
+            /* Restore original Post Data */
+            wp_reset_postdata();
+        } else {
+            return;
+        }
+
 
 	}
+
+	/**
+	 * Private function Convert Hex to RGBa
+	 *
+	 * source: https://mekshq.com/how-to-convert-hexadecimal-color-code-to-rgb-or-rgba-using-php/
+	 */
+	 /* Convert hexdec color string to rgb(a) string */
+
+    private function hex2rgba($color, $opacity = false) {
+
+        $default = 'rgb(0,0,0)';
+
+        //Return default if no color provided
+        if(empty($color))
+              return $default;
+
+        //Sanitize $color if "#" is provided
+            if ($color[0] == '#' ) {
+                $color = substr( $color, 1 );
+            }
+
+            //Check if color has 6 or 3 characters and get values
+            if (strlen($color) == 6) {
+                    $hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+            } elseif ( strlen( $color ) == 3 ) {
+                    $hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+            } else {
+                    return $default;
+            }
+
+            //Convert hexadec to rgb
+            $rgb =  array_map('hexdec', $hex);
+
+            //Check if opacity is set(rgba or rgb)
+            if($opacity){
+                if(abs($opacity) > 1)
+                    $opacity = 1.0;
+                $output = 'rgba('.implode(",",$rgb).','.$opacity.')';
+            } else {
+                $output = 'rgb('.implode(",",$rgb).')';
+            }
+
+            //Return rgb(a) color string
+            return $output;
+    }
 
 	/**
 	 * Register the JavaScript for the public-facing side of the site.
