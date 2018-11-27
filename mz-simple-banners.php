@@ -20,7 +20,7 @@
  * Author URI:        http://mzoo.org/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       wp-plugin-name
+ * Text Domain:       mz-simple-banners
  * Domain Path:       /languages
  */
 
@@ -37,7 +37,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 define( __NAMESPACE__ . '\NS', __NAMESPACE__ . '\\' );
 
-define( NS . 'PLUGIN_NAME', 'wp-plugin-name' );
+define( NS . 'PLUGIN_NAME', 'mz-simple-banners' );
 
 define( NS . 'PLUGIN_VERSION', '1.0.0' );
 
@@ -47,7 +47,7 @@ define( NS . 'PLUGIN_NAME_URL', plugin_dir_url( __FILE__ ) );
 
 define( NS . 'PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
-define( NS . 'PLUGIN_TEXT_DOMAIN', 'wp-plugin-name' );
+define( NS . 'PLUGIN_TEXT_DOMAIN', 'mz-simple-banners' );
 
 
 /**
