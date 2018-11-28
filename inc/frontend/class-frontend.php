@@ -102,17 +102,26 @@ class Frontend {
         if ( $the_query->have_posts() ) {
             while ( $the_query->have_posts() ) {
                 $the_query->the_post();
+                if (in_array('fl-builder', get_body_class())):
+                // echo "<pre>";
+                // print_r(get_post_meta($the_query->post->ID));
+                // echo "</pre>";
+                endif;
                 if (function_exists('get_field')) {
                     $banner_background_color = get_field('banner_background_color');
                     $banner_background_opacity = get_field('banner_background_opacity');
+                    $text_color = get_field('text_color');
                 }
                 // Assign variables with defaults
-                $color = !empty($banner_background_color) ? $banner_background_color : '#99999';
+                $bgcolor = !empty($banner_background_color) ? $banner_background_color : '#99999';
                 $opacity = !empty($banner_background_opacity) ? $banner_background_opacity : false;
+                $text_color = !empty($text_color) ? $text_color : '#000';
                 // Begin style rule
                 $banner_style = 'style="';
                 // build the background
-                $banner_style .= 'background:' . $this->hex2rgba($color, $opacity) . ';';
+                $banner_style .= 'background:' . $this->hex2rgba($bgcolor, $opacity) . ';';
+                // build the text color
+                $banner_style .= 'color:' . $text_color . ';';
                 // build the positioning
                 $banner_style .= 'position:fixed;';
                 $banner_style .= 'bottom:0;';
@@ -123,11 +132,13 @@ class Frontend {
                 $banner_style .= 'z-index:1000;';
                 //end the style rule
                 $banner_style .= '"';
-                echo '<div '. $banner_style . 'class="mz-simple-banner mz-simple-banner-' . get_the_title(). '">';
-                echo '<button type="button" class="close" aria-label="Close">';
-                echo '  <span aria-hidden="true">&times;</span>';
-                echo '</button>';
+                echo '<div '. $banner_style . 'class="mx-auto p-2 mz-simple-banner mz-simple-banner-' . get_the_title(). '">';
+                echo '  <button id="mzBannerClose" style="opacity:1" type="button" class="close" aria-label="Close">';
+                echo '      <span aria-hidden="true" style="color:' . $text_color . ';">&times;</span>';
+                echo '  </button>';
+                echo '  <div class="text-center">';
                 echo the_content();
+                echo '  </div>';
                 echo '</div>';
             }
             /* Restore original Post Data */

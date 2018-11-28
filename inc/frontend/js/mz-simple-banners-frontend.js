@@ -27,8 +27,14 @@
 	 * single DOM-ready or window-load handler for a particular page.
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
-         * 
+         *
          * The file is enqueued from inc/frontend/class-frontend.php.
 	 */
+	$(function() {
 
+	  $('#mzBannerClose').on('click', function(e){
+      $(this).parent().fadeOut();
+    });
+
+	 });
 })( jQuery );
