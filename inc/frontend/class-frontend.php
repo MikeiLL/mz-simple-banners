@@ -112,7 +112,8 @@ class Frontend {
 	 * @since    1.0.0
 	 */
 	public function display_banner() {
-	    if (!is_front_page()) return;
+
+	    if ( array_key_exists('fl_builder', $_GET) || is_admin() || !is_front_page() ) return;
 
         // The Query
         $args = array(
@@ -129,7 +130,6 @@ class Frontend {
             // Load scripts and styles
             wp_enqueue_style( $this->plugin_name );
             wp_enqueue_script( $this->plugin_name );
-            die($this->plugin_name);
 
             while ( $the_query->have_posts() ) {
                 $the_query->the_post();
